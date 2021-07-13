@@ -30,12 +30,13 @@ function Fsearch(props){
     return (
         
             <div className="container">
-                
-           <center> <b><p className="titleText">New Shivam Medicos</p></b></center>
-          <center><input type="text" className="searchBar" 
+           <center> <h3><b><p className="text-success"></p></b></h3></center>
+           <br></br><br></br>
+           <div className="container-sm">
+          <center><input type="text" className="form-control" placeholder="Search Medicine here"
             onChange={(event)=> setValue(event.target.value)}
             value={value}
-            /></center>  
+            /></center>  </div>
             <div className="SearchBack">
                 <div className="SearchEntry">
                 <table class="table table-striped">
