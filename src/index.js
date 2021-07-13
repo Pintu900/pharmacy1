@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+//import App from './App';
+import Fsearch from './component/Search';
+//import {Navbar} from './component/Navbar';
+//import {Corosel} from './component/Corosel';
 import reportWebVitals from './reportWebVitals';
 
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+ <Fsearch/>,
   document.getElementById('root')
 );
 
@@ -15,3 +17,7 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+//<React.StrictMode>
+//<App />
+//</React.StrictMode>
