@@ -1,56 +1,55 @@
 import React,{useState,useEffect} from 'react';
+import * as ReactBootStrap from 'react-bootstrap';
 let salad = [];
 function Fsearch(props){
     
-   
+    const [loading,setLoading]=useState(false);
     const [value,setValue]=useState('');
-    const [result,setResult]=useState(['']);
+    const [output,setOutput]=useState([]);
+    const [result,setResult]=useState([]);
+    useEffect(()=>{
+        console.log("mount");
+            fetch('https://pharmacy-6bcb1.firebaseio.com/record.json')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                 setOutput(Object.values(data));
+                setResult(Object.values(data));
+                 //console.log(output);
+            })
+    },[])
 
+// useEffect(()=>{
+//     result=output;
+// },[])
     useEffect(()=>{
         if(value.length>0){
-        fetch('https://pharmacy-6bcb1.firebaseio.com/record.json')
-         .then(response => response.json())
-         .then(data => {
+          setLoading(true);
+       
+          setLoading(false);
              setResult([]);
              let searchQuery=value.toLowerCase();
-             for(const key in data){
-                 let med=data[key].name.toLowerCase();
+             for(const key of output){
+                 let med=key.name.toLowerCase();
                  if(med.slice(0,searchQuery.length).indexOf(searchQuery) !== -1){
                      setResult(prevResult=>{
-                         return [...prevResult,data[key]]
+                         return [...prevResult,key]
                      })
                  }
-             }
              
-         }).catch(error => {
-             console.log(error);
-         })
+             
+         }
         }else{
-         fetch('https://pharmacy-6bcb1.firebaseio.com/record.json')
-         .then(response => response.json())
-         .then(data => {
-             setResult([]);
-            // let searchQuery=value.toLowerCase();
-             for(const key in data){
-                 let med=data[key].name.toLowerCase();
-                 if(med.slice(0,1).indexOf('a') !== -1){
-                     setResult(prevResult=>{
-                         return [...prevResult,data[key]]
-                     })
-                 }
-             }
-             
-         }).catch(error => {
-             console.log(error);
-         })
-        }
-    },[value])
+         setResult(output);
+        }}
+    ,[value])
 
      result.sort((a, b)=>{
       var textA = a.name.toUpperCase();
       var textB = b.name.toUpperCase();
       return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
      })
+     
 
     return (
         
@@ -75,7 +74,7 @@ function Fsearch(props){
   </thead>
   <tbody>
   {result?.map((salad,index) => (
-                        <tr>
+                        <tr key={index}>
       <th scope="row">{index+1}</th>
       <td>{salad.name}</td>
       <td>{salad.box}</td>
