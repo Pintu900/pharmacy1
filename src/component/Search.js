@@ -40,7 +40,7 @@ function Fsearch(props){
              
          }
         }else{
-         setResult(output);
+         setResult(output.slice(0,100));
         }}
     ,[value])
 
