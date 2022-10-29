@@ -1,23 +1,25 @@
 import React,{useState,useEffect} from 'react';
-import * as ReactBootStrap from 'react-bootstrap';
+import Firebase from 'firebase';
+import firebaseConfig from '../firebaseConfig';
 let salad = [];
 function Fsearch(props){
-    
     const [loading,setLoading]=useState(false);
     const [value,setValue]=useState('');
     const [output,setOutput]=useState([]);
     const [result,setResult]=useState([]);
     useEffect(()=>{
-        console.log("mount");
-            fetch('https://pharmacy-6bcb1.firebaseio.com/record.json')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                 setOutput(Object.values(data));
-                setResult(Object.values(data));
-                 //console.log(output);
-            })
-    },[])
+      setLoading(true);
+      Firebase.initializeApp(firebaseConfig);
+        let ref = Firebase.database().ref('/').child('record');
+        ref.on('value', snapshot => {
+          console.log(snapshot);
+          snapshot.forEach((childSnapshot) => {
+            const childData = childSnapshot.val();
+             output.push(childData);
+                      })
+       setResult(output);
+  setLoading(false);
+        });},[])
 
 // useEffect(()=>{
 //     result=output;
@@ -25,8 +27,6 @@ function Fsearch(props){
     useEffect(()=>{
         if(value.length>0){
           setLoading(true);
-       
-          setLoading(false);
              setResult([]);
              let searchQuery=value.toLowerCase();
              for(const key of output){
@@ -35,10 +35,9 @@ function Fsearch(props){
                      setResult(prevResult=>{
                          return [...prevResult,key]
                      })
-                 }
-             
-             
+                 }             
          }
+         setLoading(false);
         }else{
          setResult(output.slice(0,100));
         }}
@@ -83,7 +82,17 @@ function Fsearch(props){
   ))}
   </tbody>
 </table>
-                    
+{loading ?
+<div>
+<br></br><br></br><br></br><br></br><br></br><br></br>
+  <div align="center" >
+  <div  class="spinner-border text-info" role="status">
+  <span class="sr-only"></span>
+  </div>
+</div>      
+</div>
+:" "}
+             
                 </div>
             </div>
             <footer class="container fixed-bottom bg-white">
