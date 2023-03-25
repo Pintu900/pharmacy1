@@ -42,20 +42,39 @@ function Fsearch(props){
 // useEffect(()=>{
 //     result=output;
 // },[])
-console.log("ppp"+output);
+// console.log("ppp"+output);
     useEffect(()=>{
+      let ref = Firebase.database().ref('/').child('record');
         if(value.length>0){
           setLoading(true);
+            output=[];
              setResult([]);
-             let searchQuery=value.toLowerCase();
-             for(const key of output1){
-                 let med=key.name.toLowerCase();
-                 if(med.slice(0,searchQuery.length).indexOf(searchQuery) !== -1){
-                     setResult(prevResult=>{
-                         return [...prevResult,key]
-                     })
-                 }             
-         }
+             console.log(value.slice(0,1));
+             let value1=value.slice(0,1).toUpperCase() + value.slice(1,value.length);
+             console.log(value1);
+             let ref1 = Firebase.database().ref('/').child('record');
+               ref1.orderByChild("name").startAt(value1).endAt(value1+"\uf8ff").once("value").then(function(snapshot) {
+              // The snapshot contains the data that matches the query
+              snapshot.forEach((childSnapshot) => {
+                const childKey = childSnapshot.key;
+                const childData = childSnapshot.val();
+                childData['key']=childKey;
+                 output.push(childData);
+                          })
+              // setResult(snapshot.val())
+              setResult(output);
+              // console.log(result);
+             }
+             );
+        //      let searchQuery=value.toLowerCase();
+        //      for(const key of output1){
+        //          let med=key.name.toLowerCase();
+        //          if(med.slice(0,searchQuery.length).indexOf(searchQuery) !== -1){
+        //              setResult(prevResult=>{
+        //                  return [...prevResult,key]
+        //              })
+        //          }             
+        //  }
          setLoading(false);
         }else{
          setResult(output1.slice(0,100));
@@ -78,7 +97,7 @@ console.log("ppp"+output);
           setKey(key);
           setModalShow1(true)
         } 
-        console.log("ppps"+output);
+        // console.log("ppps"+output);
     return (
             <div className="container">
        <center><img src={logo11} height="70"></img></center>
@@ -99,20 +118,21 @@ console.log("ppp"+output);
                 <table className="table table-striped mb-5">
   <thead>
     <tr>
-      <th scope="col">#</th>
+      {/* <th scope="col">#</th> */}
       <th scope="col">Name</th>
       <th scope="col">Box</th>
       <th scope="col">Price</th>
-      <th>           <button type="button" className="btn btn-primary" onClick={()=>setModalShow(true)}>Insert</button></th>
+      <th><button 
+      type="button" className="btn btn-primary" onClick={()=>setModalShow(true)}>Add</button></th>
     </tr>
   </thead>
   <tbody>
   {result?.map((data,index) => (
       <tr key={index}>
-      <th scope="row" style={{padding: 15+"px"}}>{index+1}</th>
-      <td style={{fontSize:18+'px', fontFamily:'sans-serif',  padding: 15+"px"}}>{data.name}</td>
-      <td style={{fontSize:18+'px', fontFamily:'sans-serif',  padding: 15+"px"}}>{data.box}</td>
-      <td style={{fontSize:18+'px', fontFamily:'sans-serif',  padding: 15+"px"}}>{data.price}</td>
+      {/* <th scope="row" style={{padding: 15+"px"}}>{index+1}</th> */}
+      <td style={{fontSize:16+'px', fontFamily:'sans-serif',  marginRight:15+'px', marginTop:5+'px'}}>{data.name}</td>
+      <td style={{fontSize:15+'px', fontFamily:'sans-serif' }}>{data.box}</td>
+      <td style={{fontSize:15+'px', fontFamily:'sans-serif'}}>{data.price}</td>
       <td><Dropdown>
       <Dropdown.Toggle  size="sm" id="dropdown-basic"><img src={pencil} height="20"></img>
       </Dropdown.Toggle>
